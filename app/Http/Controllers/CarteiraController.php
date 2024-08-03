@@ -8,6 +8,7 @@ use App\Exceptions\SaldoInsuficienteException;
 use App\Http\Requests\CarteiraRequest;
 use App\Models\Carteira;
 use App\Models\Transacao;
+use App\Notifications\TransferNotification;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -49,6 +50,8 @@ class CarteiraController extends Controller
                 'receiver_id' => $input['receiver_id'],
                 'amount' => $input['amount']
             ]);
+
+            Auth::user()->notify(new TransferNotification($input['amount'], $receiverWallet->user->email));
 
             DB::commit();
 

@@ -17,29 +17,29 @@ class RegistroController extends Controller
     {
         $input = $request->validated();
 
-        $url = "https://viacep.com.br/ws/11111111/json/";
+        $url = "https://viacep.com.br/ws/{$input['cep']}/json/";
 
         try {
-            $response = Http::timeout(30)->retry(3, 1000)->get($url);
+        $response = Http::get($url);
 
-            if($response->failed() || isset($response->json()['error'])){
-                throw new CepInvalidoException();
-            }
+        if($response->failed() || isset($response->json()['erro'])){
+            throw new CepInvalidoException();
+        }
 
-            $input['password'] = bcrypt($input['password']);
-            $user = User::query()->create($input);
+        $input['password'] = bcrypt($input['password']);
+        $user = User::query()->create($input);
 
-            Carteira::create([
-                'user_id' => $user->id,
-                'balance' => 0.00,
-            ]);
+        Carteira::create([
+            'user_id' => $user->id,
+            'balance' => 0.00,
+        ]);
 
-            return new UserResource($user);
+        return new UserResource($user);
 
         } catch (\Exception $e) {
             Log::error('Erro CEP: ' . $e->getMessage());
 
-            return response()->json(['message' => 'Erro ao validar o CEP'] . $e->getMessage(), 500);
+            return response()->json(['message' => 'Erro ao validar o CEP'], 500);
         }
 
     }

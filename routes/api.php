@@ -5,7 +5,7 @@ use App\Http\Controllers\Auth\RegistroController;
 use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\CarteiraController;
-
+use Illuminate\Support\Facades\Mail;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -22,3 +22,13 @@ Route::post('transfer', [CarteiraController::class, 'transfer']);
 Route::post('login', LoginController::class);
 Route::post('logout', LogoutController::class);
 Route::post('registro', RegistroController::class);
+
+
+/*Route::get('/test-email', function () {
+    Mail::raw('Este é um email de teste.', function ($message) {
+        $message->to('iannjogo@gmail.com')
+            ->subject('Teste de Email');
+    });
+
+    return 'Email enviado!';
+});*/
